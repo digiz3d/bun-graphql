@@ -1,23 +1,37 @@
 import { createYoga } from 'graphql-yoga'
-import { makeHandler } from 'graphql-ws/lib/use/bun'
+import { makeHandler, handleProtocols } from 'graphql-ws/lib/use/bun'
 import { PubSub } from 'graphql-subscriptions'
 
 import schema from './schema'
+import { Context } from './graphql/context'
 
 const pubsub = new PubSub()
 
+const context: Context = { pubsub }
+
 const yoga = createYoga({
-  schema,
-  context: { pubsub },
+  context,
+  cors: { origin: '*' },
   graphiql: { subscriptionsProtocol: 'WS' },
   graphqlEndpoint: '/graphql',
   healthCheckEndpoint: '/healthz',
-  cors: { origin: '*' },
+  maskedErrors: false,
+  schema,
 })
 
 const server = Bun.serve({
-  fetch: yoga,
-  websocket: makeHandler({ schema }),
+  fetch(req, serv) {
+    if (req.headers.get('upgrade') === 'websocket') {
+      if (!handleProtocols(req.headers.get('sec-websocket-protocol') || '')) {
+        return new Response('Bad Request', { status: 400 })
+      }
+      if (!serv.upgrade(req)) {
+        return new Response('Bad Request', { status: 400 })
+      }
+    }
+    return yoga(req, serv)
+  },
+  websocket: makeHandler({ schema, context }),
 })
 
 console.info(`Server is running on ${new URL('/graphql', `http://${server.hostname}:${server.port}`)}`)

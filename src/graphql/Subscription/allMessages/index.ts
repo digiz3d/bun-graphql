@@ -4,8 +4,8 @@ import { Resolvers } from '../../types.generated'
 const resolvers: Resolvers = {
   Subscription: {
     allMessages: {
-      subscribe: (parent, args, { pubsub }) => {
-        return pubsub.asyncIterator(NewMessageTrigger) as any
+      subscribe: (parent, args, ctx) => {
+        return ctx.pubsub.asyncIterator(NewMessageTrigger) as any
       },
       resolve: (payload: NewMessagePayload) => {
         return payload.txt
