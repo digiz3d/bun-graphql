@@ -9,6 +9,10 @@ const pubsub = new PubSub()
 const yoga = createYoga({
   schema,
   context: { pubsub },
+  graphiql: { subscriptionsProtocol: 'WS' },
+  graphqlEndpoint: '/graphql',
+  healthCheckEndpoint: '/healthz',
+  cors: { origin: '*' },
 })
 
 const server = Bun.serve({
