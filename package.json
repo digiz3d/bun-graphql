@@ -1,0 +1,25 @@
+{
+  "name": "bun-graphql",
+  "module": "src/index.ts",
+  "scripts": {
+    "generate": "bun run scripts/merge-typeDefs.ts && graphql-codegen"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-resolvers": "^4.0.1",
+    "@graphql-tools/merge": "^9.0.0",
+    "bun-types": "latest",
+    "fast-glob": "^3.3.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "type": "module",
+  "dependencies": {
+    "graphql": "^16.8.1",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.14.0",
+    "graphql-yoga": "^4.0.4"
+  }
+}

@@ -1,0 +1,11 @@
+input SendMessageInput {
+  text: String!
+}
+
+type SendMessagePayload {
+  ok: Boolean!
+}
+
+type Mutation {
+  sendMessage(input: SendMessageInput!): SendMessagePayload!
+}
